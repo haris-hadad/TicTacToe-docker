@@ -14,6 +14,7 @@ TicTacToe-Docker/
 ├── images/               # Captures d'écran de chaque étape
 ├── Dockerfile
 ├── index.html
+├── style.css
 ├── save.php
 ├── results.json
 └── README.md
@@ -27,7 +28,7 @@ TicTacToe-Docker/
 docker build -t tictactoe .
 ```
 
-![Build de l'image](images/01_docker_build.png)
+![Build de l'image](images/docker_build.png)
 
 ---
 
@@ -37,8 +38,6 @@ docker build -t tictactoe .
 docker volume create game-results
 ```
 
-![Création du volume](images/02_volume_create.png)
-
 ### Vérification que le volume a bien été créé
 
 ```bash
@@ -46,18 +45,16 @@ docker volume ls
 docker volume inspect game-results
 ```
 
-![Vérification du volume](images/03_volume_inspect.png)
+![Liste des volumes](images/docker_volume_ls.png)
+
+![Inspection du volume](images/docker_volume_inspect_game-results.png)
 
 ---
 
 ## Étape 3 — Lancement du conteneur
 
 ```bash
-docker run -d \
-  --name tictactoe-app \
-  -p 8080:80 \
-  -v game-results:/usr/share/nginx/html \
-  tictactoe
+docker run -d --name tictactoe-app -p 8080:80 -v game-results:/usr/share/nginx/html tictactoe
 ```
 
 - `-d` : mode détaché (en arrière-plan)
@@ -65,7 +62,9 @@ docker run -d \
 - `-p 8080:80` : port 8080 de la machine → port 80 du conteneur
 - `-v game-results:/usr/share/nginx/html` : volume monté pour persister `results.json`
 
-![Lancement du conteneur](images/04_docker_run.png)
+![Lancement du conteneur](images/docker_run.png)
+
+![Conteneur actif](images/docker_ps.png)
 
 ---
 
@@ -73,15 +72,17 @@ docker run -d \
 
 Le jeu est accessible à l'adresse : **http://localhost:8080**
 
-![Jeu dans le navigateur](images/05_jeu_navigateur.png)
+![Jeu dans le navigateur](images/Nav.png)
 
 ---
 
-## Étape 5 — Jeu et génération de résultats
+## Étape 5 — Parties jouées
 
-Plusieurs parties jouées pour générer des données dans `results.json`.
+![Victoire X](images/nav_victoire_X.png)
 
-![Parties jouées](images/06_parties_jouees.png)
+![Victoire O](images/nav_victoire_O.png)
+
+![Match nul](images/nav_match_null.png)
 
 ---
 
@@ -91,53 +92,27 @@ Plusieurs parties jouées pour générer des données dans `results.json`.
 docker exec -it tictactoe-app sh
 ```
 
-![Accès au conteneur](images/07_exec_conteneur.png)
-
 ---
 
-## Étape 7 — Consultation du fichier results.json
-
-### Via le terminal
+## Étape 7 — Résultats des parties dans results.json
 
 ```bash
 docker exec tictactoe-app cat /usr/share/nginx/html/results.json
 ```
 
-![results.json via terminal](images/08_results_terminal.png)
+![Résultats via terminal](images/docker_results.png)
 
-### Via Docker Desktop
-
-Naviguer dans : **Volumes → game-results → Files**
-
-![results.json via Docker Desktop](images/09_results_desktop.png)
+![Résultats via Docker Desktop](images/docker_volume_result.json.png)
 
 ---
 
-## Étape 8 — Contenu du volume
-
-```bash
-docker run --rm -v game-results:/data alpine cat /data/results.json
-```
-
-![Contenu du volume](images/10_volume_content.png)
-
----
-
-## Étape 9 — Résultats des parties
-
-Contenu du fichier `results.json` après plusieurs parties :
-
-![Résultats des parties](images/11_results_json.png)
-
----
-
-## Étape 10 — Arrêt du conteneur
+## Étape 8 — Arrêt du conteneur
 
 ```bash
 docker stop tictactoe-app
 ```
 
-![Arrêt du conteneur](images/12_docker_stop.png)
+![Arrêt du conteneur](images/docker_stop.png)
 
 ---
 
